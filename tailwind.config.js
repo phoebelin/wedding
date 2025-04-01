@@ -23,7 +23,7 @@ module.exports = {
         '2xl': '1536px',
       },
       backgroundImage: {
-        'wedding-bg': "url('/images/background.jpg')",
+        'wedding-bg': "url('./images/background.jpg')",
       },
       animation: {
         'float': 'float 6s ease-in-out infinite',

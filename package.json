@@ -2,6 +2,7 @@
   "name": "wedding-website",
   "version": "0.1.0",
   "private": true,
+  "homepage": ".",
   "dependencies": {
     "@lottiefiles/dotlottie-react": "^0.13.3",
     "@types/node": "^16.18.23",
@@ -18,7 +19,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build && cp -r build/* docs/ && rm -rf build"
   },
   "eslintConfig": {
     "extends": [

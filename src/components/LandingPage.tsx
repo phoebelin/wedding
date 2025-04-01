@@ -71,7 +71,7 @@ const LandingPage: React.FC = () => {
           {/* Background Image - Different for Mobile vs Desktop */}
           <motion.div className="absolute inset-0 z-0">
             <motion.img 
-              src={isMobile ? "/images/background.png" : "/images/background-large.jpg"}
+              src={isMobile ? `${process.env.PUBLIC_URL}/images/background.png` : `${process.env.PUBLIC_URL}/images/background-large.jpg`}
               alt="Wedding Background" 
               className="w-full h-full object-cover bg-image"
               style={{ 
@@ -93,7 +93,7 @@ const LandingPage: React.FC = () => {
             }}
           >
             <img 
-              src="/images/foreground.png" 
+              src={`${process.env.PUBLIC_URL}/images/foreground.png`}
               alt="Foreground" 
               className="w-full h-full object-cover"
               onError={(e) => {
