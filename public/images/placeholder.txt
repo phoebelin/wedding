@@ -1,0 +1,6 @@
+Please replace these placeholder images with actual images from the Figma design:
+
+1. background.jpg - Main background image for the landing page
+2. wedding-image-1.jpg - First wedding photo
+3. wedding-image-2.jpg - Second wedding photo 
+4. animation.gif - Animation element at the bottom of the page 
