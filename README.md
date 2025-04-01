@@ -21,28 +21,43 @@ A mobile-optimized wedding website where guests can view the itinerary and find 
 
 ## Milestones
 
-1. **Create home page with wedding itinerary**
-   - Design and implement responsive layout
-   - Display wedding event details (ceremony, reception, etc.)
-   - Add navigation elements
+1. **Create landing page with parallax animation and scroll**
+   - Design and implement responsive landing page
+   - Add parallax scrolling effect
+   - Create smooth scroll navigation
 
-2. **Allow guests to search for their names**
+2. **Display a gallery of photos**
+   - Implement responsive photo grid
+   - Add image optimization for mobile
+   - Create lightbox view for individual photos
+
+3. **Add transition state between gallery and itinerary**
+   - Design transition elements with parallax effects
+   - Implement smooth element transitions
+   - Create visual cues for navigation
+
+4. **Display wedding event details**
+   - Design itinerary layout
+   - Show ceremony, reception, and other event information
+   - Add location maps and timing details
+
+5. **Allow guests to search for their names**
    - Implement search functionality
    - Create input form and validation
    - Design search results display
 
-3. **Create pages with individual table assignments and personalized notes**
+6. **Create pages with individual table assignments and personalized notes**
    - Design guest detail view
    - Display table assignment information
    - Show personalized notes for each guest
    - Add reveal animation for personalized note
 
-4. **Animate page transitions, text fade-ins, and interactive elements**
+7. **Animate page transitions, text fade-ins, and interactive elements**
    - Add smooth transitions between pages
    - Implement text animations and fade-ins
    - Create interactive elements (buttons, cards, etc.)
 
-5. **Deploy on GitHub Pages**
+8. **Deploy on GitHub Pages**
    - Set up GitHub repository
    - Configure GitHub Pages deployment
    - Ensure mobile compatibility and test on various devices 
