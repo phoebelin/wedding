@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 
 const Navigation: React.FC = () => {
   return (
-    <nav className="relative z-10 w-full flex justify-between items-center px-6 py-6">
+    <nav className="fixed top-0 left-0 w-full flex justify-between items-center px-6 py-6 z-30">
       <motion.a 
         href="#welcome"
         className="font-montserrat font-medium text-sm"

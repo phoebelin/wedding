@@ -2,12 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  scroll-behavior: smooth;
+  height: 100%;
+}
+
 body {
   margin: 0;
   font-family: 'Montserrat', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  min-height: 100%;
 }
 
 /* White animation effect */
@@ -19,6 +25,19 @@ body {
 /* Smooth background transitions */
 .bg-image {
   transition: opacity 0.5s ease-in-out;
+}
+
+/* Parallax elements */
+.parallax-container {
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  perspective: 1px;
+}
+
+.parallax-zoom {
+  transition: transform 0.1s ease-out;
+  will-change: transform;
 }
 
 /* Custom animations */
@@ -52,13 +71,6 @@ body {
 }
 
 /* Parallax effect */
-.parallax-container {
-  height: 100vh;
-  overflow-x: hidden;
-  overflow-y: auto;
-  perspective: 1px;
-}
-
 .parallax-layer {
   position: absolute;
   top: 0;
