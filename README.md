@@ -26,38 +26,43 @@ A mobile-optimized wedding website where guests can view the itinerary and find 
    - Add parallax scrolling effect
    - Create smooth scroll navigation
 
-2. **Display a gallery of photos**
+2. **Add transition state between landing page and gallery**
+   - Background images fade into #B8B0A2 color
+   - as the user is scrolling, keep "Our story" text in position
+   - Fade text as user scrolls to gallery view
+   - Implement smooth scroll behavior
+
+3. **Display a list of photos**
    - Implement responsive photo grid
    - Add image optimization for mobile
-   - Create lightbox view for individual photos
+   - Implement smooth element transitions
 
-3. **Add transition state between gallery and itinerary**
+4. **Add transition state between gallery and itinerary**
    - Design transition elements with parallax effects
    - Implement smooth element transitions
    - Create visual cues for navigation
 
-4. **Display wedding event details**
+5. **Display wedding event details**
    - Design itinerary layout
    - Show ceremony, reception, and other event information
-   - Add location maps and timing details
 
-5. **Allow guests to search for their names**
+6. **Allow guests to search for their names**
    - Implement search functionality
    - Create input form and validation
    - Design search results display
 
-6. **Create pages with individual table assignments and personalized notes**
+7. **Create pages with individual table assignments and personalized notes**
    - Design guest detail view
    - Display table assignment information
    - Show personalized notes for each guest
    - Add reveal animation for personalized note
 
-7. **Animate page transitions, text fade-ins, and interactive elements**
+8. **Animate page transitions, text fade-ins, and interactive elements**
    - Add smooth transitions between pages
    - Implement text animations and fade-ins
    - Create interactive elements (buttons, cards, etc.)
 
-8. **Deploy on GitHub Pages**
+9. **Deploy on GitHub Pages**
    - Set up GitHub repository
    - Configure GitHub Pages deployment
    - Ensure mobile compatibility and test on various devices 

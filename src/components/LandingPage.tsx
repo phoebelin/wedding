@@ -24,15 +24,18 @@ const LandingPage: React.FC = () => {
   const welcomeTextOpacity = useTransform(scrollYProgress, [0, 0.12], [1, 0]);
   const storyTextOpacity = useTransform(scrollYProgress, [0.08, 0.2], [0, 1]);
   
-  // Scroll lock transform - prevents actual page scrolling until threshold
+  // Background color transition (from transparent to #B8B0A2) - made faster
+  const backgroundOpacity = useTransform(scrollYProgress, [0.2, 0.35], [0, 1]);
+  
+  // Content section visibility - appears right after story text fades
+  const contentOpacity = useTransform(scrollYProgress, [0.4, 0.5], [0, 1]);
+  
+  // Scroll lock transform - begins scrolling right after story text fade completes
   const scrollLockY = useTransform(
     scrollYProgress,
-    [0, 0.25, 0.3, 0.5, 1],
-    ["0vh", "0vh", "-20vh", "-100vh", "-200vh"]
+    [0, 0.43, 0.45, 0.65, 1],
+    ["0vh", "0vh", "-10vh", "-100vh", "-200vh"]
   );
-  
-  // Content section visibility
-  const contentOpacity = useTransform(scrollYProgress, [0.35, 0.45], [0, 1]);
   
   // Update story visibility based on scroll position
   useEffect(() => {
@@ -65,11 +68,17 @@ const LandingPage: React.FC = () => {
         <motion.div 
           className="fixed top-0 left-0 w-full h-screen"
           style={{ 
-            y: scrollLockY
+            y: scrollLockY,
+            opacity: useTransform(scrollYProgress, [0.7, 0.75], [1, 0]) // Fade out main container after gallery is fully visible
           }}
         >
           {/* Background Image - Different for Mobile vs Desktop */}
-          <motion.div className="absolute inset-0 z-0">
+          <motion.div 
+            className="absolute inset-0 z-0"
+            style={{
+              opacity: useTransform(scrollYProgress, [0.43, 0.48], [1, 0]) // Fade out background immediately after story text
+            }}
+          >
             <motion.img 
               src={isMobile ? `${process.env.PUBLIC_URL}/images/background.png` : `${process.env.PUBLIC_URL}/images/background-large.jpg`}
               alt="Wedding Background" 
@@ -82,6 +91,18 @@ const LandingPage: React.FC = () => {
                 e.currentTarget.src = 'https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80';
               }}
             />
+            {/* Background color overlay that fades in */}
+            <motion.div 
+              className="absolute inset-0 bg-[#B8B0A2]" 
+              style={{ 
+                opacity: backgroundOpacity,
+                // Ensure the background color stays visible after transition
+                display: useTransform(
+                  scrollYProgress, 
+                  value => value > 0.35 ? 'block' : 'block'
+                )
+              }}
+            />
           </motion.div>
           
           {/* Foreground Image with Enhanced Parallax Zoom Effect */}
@@ -89,7 +110,8 @@ const LandingPage: React.FC = () => {
             className="absolute inset-0 z-10 overflow-hidden"
             style={{ 
               scale: foregroundScale,
-              originY: 0.5
+              originY: 0.5,
+              opacity: useTransform(scrollYProgress, [0.3, 0.4], [1, 0])
             }}
           >
             <img 
@@ -139,10 +161,16 @@ const LandingPage: React.FC = () => {
             </motion.h2>
           </motion.div>
           
-          {/* Story Text - Fades in on scroll */}
+          {/* Story Text - Fades in on initial scroll, then out after background change */}
           <motion.div 
             className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center text-center w-[80%] max-w-[317px] z-20"
-            style={{ opacity: storyTextOpacity }}
+            style={{ 
+              opacity: useTransform(
+                scrollYProgress, 
+                [0.08, 0.2, 0.38, 0.43], 
+                [0, 1, 1, 0]
+              )
+            }}
           >
             <motion.h2 
               className="font-alex-brush text-4xl mb-6"
@@ -166,7 +194,9 @@ const LandingPage: React.FC = () => {
           {/* Scroll Animation at bottom - Centered on page */}
           <motion.div 
             className="absolute left-0 right-0 bottom-20 flex justify-center items-center z-20"
-            style={{ opacity: welcomeTextOpacity }}
+            style={{ 
+              opacity: useTransform(scrollYProgress, [0, 0.15, 0.3, 0.4], [1, 1, 0.5, 0])
+            }}
           >
             <motion.div 
               className="w-24 h-24 md:w-32 md:h-32"
@@ -190,22 +220,31 @@ const LandingPage: React.FC = () => {
           </motion.div>
         </motion.div>
         
-        {/* Content section that appears after the transition */}
+        {/* Gallery section that appears after the transition */}
         <motion.div 
-          className="fixed top-0 left-0 w-full h-screen flex items-center justify-center z-30"
+          className="fixed top-0 left-0 w-full h-screen flex items-center justify-center z-40 bg-[#B8B0A2]"
           style={{ 
             opacity: contentOpacity,
-            y: useTransform(scrollYProgress, [0.35, 0.5], ["100vh", "0vh"])
+            y: useTransform(
+              scrollYProgress, 
+              [0.45, 0.7, 1], 
+              ["0vh", "0vh", "-100vh"]
+            )
           }}
         >
-          <div className="bg-dark text-white p-8 rounded-lg max-w-lg text-center">
-            <h2 className="font-alex-brush text-4xl mb-4">Join Us</h2>
-            <p className="font-montserrat">
-              We are excited to celebrate our special day with you.
+          <div className="text-center p-8">
+            <h2 className="font-alex-brush text-4xl mb-4 text-dark">Photo Gallery</h2>
+            <p className="font-montserrat text-dark mb-8">
+              Our favorite moments together
             </p>
-            <button className="mt-6 bg-white text-dark px-6 py-2 rounded-full font-montserrat font-medium hover:bg-opacity-90 transition">
-              RSVP
-            </button>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <div className="aspect-square bg-gray-200 rounded-lg"></div>
+              <div className="aspect-square bg-gray-300 rounded-lg"></div>
+              <div className="aspect-square bg-gray-400 rounded-lg"></div>
+              <div className="aspect-square bg-gray-300 rounded-lg"></div>
+              <div className="aspect-square bg-gray-400 rounded-lg"></div>
+              <div className="aspect-square bg-gray-200 rounded-lg"></div>
+            </div>
           </div>
         </motion.div>
       </div>
