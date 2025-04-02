@@ -5,7 +5,7 @@ const Navigation: React.FC = () => {
   return (
     <nav className="fixed top-0 left-0 w-full flex justify-between items-center px-6 py-6 z-30">
       <motion.a 
-        href="#welcome"
+        href="#story"
         className="font-montserrat font-medium text-sm"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -13,7 +13,7 @@ const Navigation: React.FC = () => {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
-        Welcome
+        Story
       </motion.a>
       
       <motion.a 
