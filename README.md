@@ -33,7 +33,7 @@ A mobile-optimized wedding website where guests can view the itinerary and find 
    - Implement smooth scroll behavior
 
 3. **Display a list of photos**
-   - Implement responsive photo grid
+   - page becomes scrollable
    - Add image optimization for mobile
    - Implement smooth element transitions
 

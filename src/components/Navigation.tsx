@@ -1,56 +1,127 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 
-const Navigation: React.FC = () => {
+interface NavigationProps {
+  activeSection: string;
+}
+
+const Navigation: React.FC<NavigationProps> = ({ activeSection }) => {
+  // Create refs for each navigation item
+  const welcomeRef = useRef<HTMLDivElement>(null);
+  const photosRef = useRef<HTMLDivElement>(null);
+  const itineraryRef = useRef<HTMLDivElement>(null);
+  const seatRef = useRef<HTMLDivElement>(null);
+  
+  // State to track dot position
+  const [dotPosition, setDotPosition] = useState({ left: 0, width: 0 });
+  
+  // Update dot position based on active section
+  useEffect(() => {
+    let targetRef;
+    switch(activeSection) {
+      case 'welcome':
+        targetRef = welcomeRef;
+        break;
+      case 'photos':
+        targetRef = photosRef;
+        break;
+      case 'itinerary':
+        targetRef = itineraryRef;
+        break;
+      case 'seat':
+        targetRef = seatRef;
+        break;
+      default:
+        targetRef = welcomeRef;
+    }
+    
+    if (targetRef.current) {
+      const rect = targetRef.current.getBoundingClientRect();
+      const navRect = targetRef.current.parentElement?.getBoundingClientRect();
+      
+      if (navRect) {
+        // Calculate center position relative to nav
+        const centerX = rect.left + (rect.width / 2) - navRect.left;
+        setDotPosition({ 
+          left: centerX,
+          width: rect.width
+        });
+      }
+    }
+  }, [activeSection]);
+
   return (
-    <nav className="fixed top-0 left-0 w-full flex justify-between items-center px-6 py-6 z-30">
-      <motion.a 
-        href="#story"
-        className="font-montserrat font-medium text-sm"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        Story
-      </motion.a>
+    <nav className="fixed top-0 left-0 w-full flex justify-between items-center px-6 py-6 z-50">
+      <div ref={welcomeRef} className="relative">
+        <motion.a 
+          href="#welcome"
+          className={`font-montserrat font-medium text-sm ${activeSection === "welcome" ? "font-bold" : ""}`}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          Welcome
+        </motion.a>
+      </div>
       
-      <motion.a 
-        href="#photos"
-        className="font-montserrat font-medium text-sm"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        Photos
-      </motion.a>
+      <div ref={photosRef} className="relative">
+        <motion.a 
+          href="#photos"
+          className={`font-montserrat font-medium text-sm ${activeSection === "photos" ? "font-bold" : ""}`}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          Photos
+        </motion.a>
+      </div>
       
-      <motion.a 
-        href="#itinerary"
-        className="font-montserrat font-medium text-sm"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        Itinerary
-      </motion.a>
+      <div ref={itineraryRef} className="relative">
+        <motion.a 
+          href="#itinerary"
+          className={`font-montserrat font-medium text-sm ${activeSection === "itinerary" ? "font-bold" : ""}`}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          Itinerary
+        </motion.a>
+      </div>
       
-      <motion.a 
-        href="#seat"
-        className="font-montserrat font-medium text-sm"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        Seat
-      </motion.a>
+      <div ref={seatRef} className="relative">
+        <motion.a 
+          href="#seat"
+          className={`font-montserrat font-medium text-sm ${activeSection === "seat" ? "font-bold" : ""}`}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          Seat
+        </motion.a>
+      </div>
+
+      {/* Single animated navigation dot */}
+      <motion.div 
+        className="absolute h-1.5 w-1.5 bg-white rounded-full"
+        initial={false}
+        animate={{
+          left: `${dotPosition.left}px`,
+          top: 'calc(100% - 23px)'
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 300,
+          damping: 30
+        }}
+      />
     </nav>
   );
 };
