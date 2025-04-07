@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import Navigation from './Navigation';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import SeatFinder from './SeatFinder';
 
 const LandingPage: React.FC = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
@@ -41,8 +42,8 @@ const LandingPage: React.FC = () => {
   // Scroll lock transform - begins scrolling right after story text fade completes
   const scrollLockY = useTransform(
     scrollYProgress,
-    [0, 0.39, 0.41, 0.55, 1],
-    ["0vh", "0vh", "-10vh", "-100vh", "-200vh"]
+    [0, 0.39, 0.41, 0.55, 0.75, 0.9, 1],
+    ["0vh", "0vh", "-10vh", "-100vh", "-200vh", "-300vh", "-400vh"]
   );
   
   // Update section visibility based on scroll position
@@ -50,10 +51,14 @@ const LandingPage: React.FC = () => {
     const unsubscribe = scrollYProgress.onChange(value => {
       if (value < 0.12) {
         setActiveSection("welcome");
-      } else if (value < 0.4) {
+      } else if (value < 0.35) {
         setActiveSection("story");
-      } else if (value >= 0.45) {
+      } else if (value < 0.5) {
         setActiveSection("photos");
+      } else if (value < 0.7) {
+        setActiveSection("itinerary");
+      } else {
+        setActiveSection("seat");
       }
     });
     
@@ -86,12 +91,12 @@ const LandingPage: React.FC = () => {
       className="w-full min-h-screen bg-[#B8B0A2] text-light overflow-hidden"
     >
       {/* Fixed height container to track scroll position */}
-      <div className="w-full h-[400vh]">
+      <div className="w-full h-[600vh]">
         {/* Persistent Navigation - Fixed at the top and always visible */}
         <Navigation activeSection={activeSection} />
         
         {/* First section - Landing with parallax */}
-        <div className="h-[250vh] relative">
+        <div className="h-[250vh] relative" id="welcome">
           {/* Main Container with scroll lock */}
           <motion.div 
             className="fixed top-0 left-0 w-full h-screen"
@@ -258,7 +263,7 @@ const LandingPage: React.FC = () => {
         </div>
         
         {/* Gallery section - integrated into main scroll */}
-        <div className="relative min-h-screen bg-[#B8B0A2] pt-0 pb-24">
+        <div className="relative min-h-screen bg-[#B8B0A2] pt-0 pb-24" id="photos">
           {/* Photo Gallery Section */}
           <div className="w-full flex flex-col">
             {/* Photo Card 1 */}
@@ -321,6 +326,108 @@ const LandingPage: React.FC = () => {
               </div>
             </div>
           </div>
+        </div>
+        
+        {/* Itinerary section */}
+        <div className="relative min-h-screen bg-[#B8B0A2] pt-6 pb-24" id="itinerary">
+          <div className="w-full flex flex-col items-center">
+            {/* First Image */}
+            <div className="w-full relative">
+              <img 
+                src={`${process.env.PUBLIC_URL}/images/itinerary-image-1.jpg`}
+                alt="Decorative flowers" 
+                className="w-full h-60 object-cover"
+                loading="lazy"
+              />
+            </div>
+            
+            {/* Title */}
+            <div className="py-8">
+              <h2 className="font-alex-brush text-5xl text-white">
+                Itinerary
+              </h2>
+            </div>
+            
+            {/* Second Image */}
+            <div className="w-full relative mb-10">
+              <img 
+                src={`${process.env.PUBLIC_URL}/images/itinerary-image-2.jpg`}
+                alt="Decorative table setting" 
+                className="w-full h-60 object-cover"
+                loading="lazy"
+              />
+            </div>
+            
+            {/* Schedule */}
+            <div className="w-full px-6">
+              <div className="w-full max-w-md mx-auto">
+                {/* Schedule Item 1 */}
+                <div>
+                  <div className="flex justify-between py-4 px-4 border-t border-white">
+                    <div className="font-montserrat font-medium text-sm md:text-base text-white">
+                      3:30 - 4:00 pm
+                    </div>
+                    <div className="font-montserrat font-medium text-sm md:text-base text-white">
+                      Ceremony
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Schedule Item 2 */}
+                <div>
+                  <div className="flex justify-between py-4 px-4 border-t border-white">
+                    <div className="font-montserrat font-medium text-sm md:text-base text-white">
+                      4:00 - 5:30 pm
+                    </div>
+                    <div className="font-montserrat font-medium text-sm md:text-base text-white">
+                      Cocktail hour
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Schedule Item 3 */}
+                <div>
+                  <div className="flex justify-between py-4 px-4 border-t border-white">
+                    <div className="font-montserrat font-medium text-sm md:text-base text-white">
+                      5:30 - 7:00 pm
+                    </div>
+                    <div className="font-montserrat font-medium text-sm md:text-base text-white">
+                      Dinner
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Schedule Item 4 */}
+                <div>
+                  <div className="flex justify-between py-4 px-4 border-t border-white">
+                    <div className="font-montserrat font-medium text-sm md:text-base text-white">
+                      7:00 - 9:15 pm
+                    </div>
+                    <div className="font-montserrat font-medium text-sm md:text-base text-white">
+                      Reception
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Schedule Item 5 */}
+                <div>
+                  <div className="flex justify-between py-4 px-4 border-t border-white border-b">
+                    <div className="font-montserrat font-medium text-sm md:text-base text-white">
+                      9:30 - 9:30 pm
+                    </div>
+                    <div className="font-montserrat font-medium text-sm md:text-base text-white">
+                      Shuttles leave
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Seat section */}
+        <div className="relative min-h-screen bg-[#B8B0A2] pt-6 pb-24" id="seat">
+          <SeatFinder />
         </div>
       </div>
     </div>
