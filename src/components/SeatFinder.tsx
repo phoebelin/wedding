@@ -37,12 +37,12 @@ const SeatFinder: React.FC<SeatFinderProps> = () => {
   };
 
   return (
-    <div className="w-full flex flex-col items-center pt-12">
+    <div className="w-full flex flex-col items-center pt-40">
       <div className="w-full px-6 mx-auto" style={{ maxWidth: '345px' }}>
         {!searchResult ? (
           <div className="flex flex-col items-center">
             {/* Title */}
-            <div className="w-full mb-16">
+            <div className="w-full mb-6">
               <h2 className="font-alex-brush text-5xl text-white text-center">
                 Table Seat
               </h2>
@@ -59,18 +59,12 @@ const SeatFinder: React.FC<SeatFinderProps> = () => {
             <div className="w-full mb-6">
               <input 
                 type="text" 
-                className="w-full border-2 border-white bg-transparent rounded-xl px-4 text-white font-montserrat placeholder-white::placeholder focus:outline-none"
+                className="w-full border border-white bg-transparent rounded-xl px-4 text-white font-montserrat placeholder-white::placeholder focus:outline-none focus:border-2"
                 style={{ height: '56px' }}
                 placeholder=""
                 value={searchName}
                 onChange={(e) => setSearchName(e.target.value)}
               />
-              
-              {notFound && (
-                <p className="mt-2 text-white font-montserrat text-sm">
-                  Guest not found. Please check the spelling or try a different name.
-                </p>
-              )}
             </div>
             
             {/* Find Button */}
@@ -83,9 +77,16 @@ const SeatFinder: React.FC<SeatFinderProps> = () => {
               <img 
                 src={`${process.env.PUBLIC_URL}/images/chevron-right.svg`} 
                 alt="Find" 
-                className="w-6 h-6"
+                className="w-3.5 h-3.5"
               />
             </div>
+            
+            {/* Error Message */}
+            {notFound && (
+              <p className="mt-3 text-red-500 font-montserrat text-sm">
+                name not found
+              </p>
+            )}
           </div>
         ) : (
           <motion.div 

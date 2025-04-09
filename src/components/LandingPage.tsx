@@ -39,11 +39,66 @@ const LandingPage: React.FC = () => {
   // Background image fade out - make it fade out completely before gallery appears
   const backgroundImageOpacity = useTransform(scrollYProgress, [0.35, 0.39], [1, 0]);
   
-  // Scroll lock transform - begins scrolling right after story text fade completes
+  // Main container opacity - fade out after story text disappears
+  const mainContainerOpacity = useTransform(scrollYProgress, [0.39, 0.42], [1, 0]);
+  
+  // Scroll lock transform - changed to keep main container fixed until story fully fades
   const scrollLockY = useTransform(
     scrollYProgress,
-    [0, 0.39, 0.41, 0.55, 0.75, 0.9, 1],
+    [0, 0.39, 0.45, 0.58, 0.78, 0.93, 1],
     ["0vh", "0vh", "-10vh", "-100vh", "-200vh", "-300vh", "-400vh"]
+  );
+  
+  // Gallery scroll transform - makes gallery scroll up from below
+  const galleryY = useTransform(
+    scrollYProgress,
+    [0.37, 0.45, 0.47],
+    ["100vh", "20vh", "0vh"]
+  );
+  
+  // Subtle rotation effects for itinerary images
+  const firstImageRotate = useTransform(
+    scrollYProgress,
+    [0.5, 0.7],
+    [-10, 10] // Subtle clockwise rotation (in degrees)
+  );
+  
+  // Change second image from rotation to sliding
+  const secondImageSlide = useTransform(
+    scrollYProgress,
+    [0.5, 0.7],
+    ['10%', '-10%'] // Slide left and right
+  );
+  
+  // Sparkle animations
+  const sparkleFloat1 = useTransform(
+    scrollYProgress,
+    [0.55, 0.8],
+    [0, -40] // Float upward as user scrolls down
+  );
+  
+  const sparkleFloat2 = useTransform(
+    scrollYProgress,
+    [0.55, 0.8],
+    [0, -60] // Float upward faster
+  );
+  
+  const sparkleFloat3 = useTransform(
+    scrollYProgress,
+    [0.6, 0.85],
+    [0, -50] // Float upward with different timing
+  );
+  
+  const sparkleFloat4 = useTransform(
+    scrollYProgress,
+    [0.58, 0.83],
+    [0, -70] // Float upward even faster
+  );
+  
+  const sparkleFloat5 = useTransform(
+    scrollYProgress,
+    [0.63, 0.88],
+    [0, -45] // Different timing
   );
   
   // Update section visibility based on scroll position
@@ -102,7 +157,7 @@ const LandingPage: React.FC = () => {
             className="fixed top-0 left-0 w-full h-screen"
             style={{ 
               y: scrollLockY,
-              opacity: useTransform(scrollYProgress, [0.39, 0.43], [1, 0]) // Fade out main container right after story text
+              opacity: mainContainerOpacity // Use dedicated variable for main container opacity
             }}
           >
             {/* Background Image - Different for Mobile vs Desktop */}
@@ -263,7 +318,13 @@ const LandingPage: React.FC = () => {
         </div>
         
         {/* Gallery section - integrated into main scroll */}
-        <div className="relative min-h-screen bg-[#B8B0A2] pt-0 pb-24" id="photos">
+        <motion.div 
+          className="relative min-h-screen bg-[#B8B0A2] pt-0 pb-24" 
+          id="photos"
+          style={{
+            y: galleryY // Only slide up from below, no fading
+          }}
+        >
           {/* Photo Gallery Section */}
           <div className="w-full flex flex-col">
             {/* Photo Card 1 */}
@@ -326,48 +387,361 @@ const LandingPage: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
         
         {/* Itinerary section */}
-        <div className="relative min-h-screen bg-[#B8B0A2] pt-6 pb-24" id="itinerary">
+        <div className="relative min-h-screen bg-[#B8B0A2] pt-0 pb-24" id="itinerary">
           <div className="w-full flex flex-col items-center">
             {/* First Image */}
-            <div className="w-full relative">
+            <motion.div 
+              className="w-full max-w-screen-md mx-auto px-4 relative"
+              style={{
+                rotate: firstImageRotate
+              }}
+            >
+              {/* Sparkle 1 - Top Left */}
+              <motion.div 
+                className="absolute -top-8 -left-4 text-white z-10"
+                style={{ y: sparkleFloat1 }}
+                animate={{ 
+                  scale: [0.8, 1.2, 0.8],
+                  opacity: [0.5, 1, 0.5],
+                  rotate: [0, 45, 0]
+                }}
+                transition={{ 
+                  repeat: Infinity,
+                  duration: 3,
+                  ease: "easeInOut" 
+                }}
+              >
+                ⭐
+              </motion.div>
+              
+              {/* Sparkle 2 - Top Right */}
+              <motion.div 
+                className="absolute -top-4 -right-4 text-white z-10"
+                style={{ y: sparkleFloat2 }}
+                animate={{ 
+                  scale: [1, 1.5, 1],
+                  opacity: [0.7, 1, 0.7],
+                  rotate: [0, -30, 0] 
+                }}
+                transition={{ 
+                  repeat: Infinity,
+                  duration: 2.5,
+                  ease: "easeInOut",
+                  delay: 0.5
+                }}
+              >
+                ⭐
+              </motion.div>
+              
+              {/* New Sparkle - Left Center */}
+              <motion.div 
+                className="absolute top-1/3 -left-10 text-white z-10 text-lg"
+                style={{ y: sparkleFloat5 }}
+                animate={{ 
+                  scale: [0.7, 1.1, 0.7],
+                  opacity: [0.6, 1, 0.6],
+                  rotate: [0, 20, 0] 
+                }}
+                transition={{ 
+                  repeat: Infinity,
+                  duration: 3.7,
+                  ease: "easeInOut",
+                  delay: 0.2
+                }}
+              >
+                ⭐
+              </motion.div>
+              
+              {/* New Sparkle - Right Center */}
+              <motion.div 
+                className="absolute top-2/3 -right-12 text-white z-10 text-xl"
+                style={{ y: sparkleFloat4 }}
+                animate={{ 
+                  scale: [0.8, 1.3, 0.8],
+                  opacity: [0.4, 0.9, 0.4],
+                  rotate: [0, -40, 0] 
+                }}
+                transition={{ 
+                  repeat: Infinity,
+                  duration: 4.2,
+                  ease: "easeInOut",
+                  delay: 1.1
+                }}
+              >
+                ⭐
+              </motion.div>
+              
               <img 
                 src={`${process.env.PUBLIC_URL}/images/itinerary-image-1.jpg`}
                 alt="Decorative flowers" 
-                className="w-full h-60 object-cover"
+                className="w-full object-contain"
                 loading="lazy"
               />
-            </div>
+              
+              {/* Sparkle 3 - Bottom Right */}
+              <motion.div 
+                className="absolute -bottom-8 -right-8 text-white z-10"
+                style={{ y: sparkleFloat3 }}
+                animate={{ 
+                  scale: [0.9, 1.3, 0.9],
+                  opacity: [0.6, 1, 0.6],
+                  rotate: [0, 60, 0] 
+                }}
+                transition={{ 
+                  repeat: Infinity,
+                  duration: 3.5,
+                  ease: "easeInOut" 
+                }}
+              >
+                ⭐
+              </motion.div>
+              
+              {/* New Sparkle - Bottom Left */}
+              <motion.div 
+                className="absolute -bottom-10 -left-6 text-white z-10 text-lg"
+                style={{ y: sparkleFloat2 }}
+                animate={{ 
+                  scale: [0.6, 1.2, 0.6],
+                  opacity: [0.5, 0.8, 0.5],
+                  rotate: [0, 35, 0] 
+                }}
+                transition={{ 
+                  repeat: Infinity,
+                  duration: 3.8,
+                  ease: "easeInOut",
+                  delay: 0.7
+                }}
+              >
+                ⭐
+              </motion.div>
+            </motion.div>
             
             {/* Title */}
-            <div className="py-8">
+            <div className="py-8 relative">
+              {/* Sparkle around title - Top */}
+              <motion.div 
+                className="absolute -top-6 -right-8 text-white z-10 text-sm"
+                style={{ y: sparkleFloat1 }}
+                animate={{ 
+                  scale: [0.7, 1.2, 0.7],
+                  opacity: [0.5, 0.9, 0.5],
+                  rotate: [0, 30, 0] 
+                }}
+                transition={{ 
+                  repeat: Infinity,
+                  duration: 2.8,
+                  ease: "easeInOut",
+                  delay: 0.2
+                }}
+              >
+                ⭐
+              </motion.div>
+              
+              {/* Sparkle around title - Left */}
+              <motion.div 
+                className="absolute top-1/2 -left-12 text-white z-10 text-lg"
+                style={{ y: sparkleFloat3 }}
+                animate={{ 
+                  scale: [0.9, 1.4, 0.9],
+                  opacity: [0.6, 1, 0.6],
+                  rotate: [0, -25, 0] 
+                }}
+                transition={{ 
+                  repeat: Infinity,
+                  duration: 3.3,
+                  ease: "easeInOut",
+                  delay: 0.9
+                }}
+              >
+                ⭐
+              </motion.div>
+              
               <h2 className="font-alex-brush text-5xl text-white">
                 Itinerary
               </h2>
+              
+              {/* Sparkle around title - Bottom */}
+              <motion.div 
+                className="absolute -bottom-6 -left-6 text-white z-10 text-xs"
+                style={{ y: sparkleFloat2 }}
+                animate={{ 
+                  scale: [0.8, 1.3, 0.8],
+                  opacity: [0.4, 0.8, 0.4],
+                  rotate: [0, 45, 0] 
+                }}
+                transition={{ 
+                  repeat: Infinity,
+                  duration: 2.6,
+                  ease: "easeInOut",
+                  delay: 0.5
+                }}
+              >
+                ⭐
+              </motion.div>
             </div>
             
             {/* Second Image */}
-            <div className="w-full relative mb-10">
+            <motion.div 
+              className="w-full max-w-xs mx-auto mb-10 px-4 relative"
+              style={{
+                x: secondImageSlide // Using x for horizontal movement instead of rotate
+              }}
+            >
+              
+              
+              {/* Sparkle 5 - Bottom Left */}
+              <motion.div 
+                className="absolute -bottom-4 -left-4 text-white z-10"
+                style={{ y: sparkleFloat1 }}
+                animate={{ 
+                  scale: [0.8, 1.4, 0.8],
+                  opacity: [0.6, 1, 0.6],
+                  rotate: [0, 30, 0] 
+                }}
+                transition={{ 
+                  repeat: Infinity,
+                  duration: 3,
+                  ease: "easeInOut",
+                  delay: 0.3
+                }}
+              >
+                ⭐
+              </motion.div>
+              
+              {/* New Sparkle - Top Right */}
+              <motion.div 
+                className="absolute -top-8 -right-4 text-white z-10 text-lg"
+                style={{ y: sparkleFloat4 }}
+                animate={{ 
+                  scale: [0.6, 1.0, 0.6],
+                  opacity: [0.5, 0.9, 0.5],
+                  rotate: [0, 25, 0] 
+                }}
+                transition={{ 
+                  repeat: Infinity,
+                  duration: 2.9,
+                  ease: "easeInOut",
+                  delay: 1.2
+                }}
+              >
+                ⭐
+              </motion.div>
+              
+              {/* New Sparkle - Left Center */}
+              <motion.div 
+                className="absolute top-1/3 -left-10 text-white z-10 text-xs"
+                style={{ y: sparkleFloat5 }}
+                animate={{ 
+                  scale: [0.9, 1.5, 0.9],
+                  opacity: [0.4, 0.8, 0.4],
+                  rotate: [0, -15, 0] 
+                }}
+                transition={{ 
+                  repeat: Infinity,
+                  duration: 3.3,
+                  ease: "easeInOut",
+                  delay: 0.8
+                }}
+              >
+                ⭐
+              </motion.div>
+              
               <img 
                 src={`${process.env.PUBLIC_URL}/images/itinerary-image-2.jpg`}
                 alt="Decorative table setting" 
-                className="w-full h-60 object-cover"
+                className="w-full object-contain max-h-[50vh]"
                 loading="lazy"
               />
-            </div>
+              
+              {/* Sparkle 6 - Right Center */}
+              <motion.div 
+                className="absolute top-1/2 -right-8 text-white z-10"
+                style={{ y: sparkleFloat3 }}
+                animate={{ 
+                  scale: [1, 1.6, 1],
+                  opacity: [0.7, 1, 0.7],
+                  rotate: [0, 60, 0]
+                }}
+                transition={{ 
+                  repeat: Infinity,
+                  duration: 2.7,
+                  ease: "easeInOut" 
+                }}
+              >
+                ⭐
+              </motion.div>
+              
+              {/* New Sparkle - Bottom Right */}
+              <motion.div 
+                className="absolute -bottom-6 -right-6 text-white z-10 text-sm"
+                style={{ y: sparkleFloat1 }}
+                animate={{ 
+                  scale: [0.7, 1.2, 0.7],
+                  opacity: [0.5, 0.9, 0.5],
+                  rotate: [0, -40, 0] 
+                }}
+                transition={{ 
+                  repeat: Infinity,
+                  duration: 3.6,
+                  ease: "easeInOut",
+                  delay: 0.4
+                }}
+              >
+                ⭐
+              </motion.div>
+            </motion.div>
             
             {/* Schedule */}
-            <div className="w-full px-6">
+            <div className="w-full px-6 relative">
+              {/* Schedule sparkle 1 */}
+              <motion.div 
+                className="absolute -top-4 right-10 text-white z-10 text-sm"
+                style={{ y: sparkleFloat2 }}
+                animate={{ 
+                  scale: [0.6, 1.0, 0.6],
+                  opacity: [0.4, 0.8, 0.4],
+                  rotate: [0, 30, 0] 
+                }}
+                transition={{ 
+                  repeat: Infinity,
+                  duration: 2.9,
+                  ease: "easeInOut",
+                  delay: 0.9
+                }}
+              >
+                ⭐
+              </motion.div>
+              
+              {/* Schedule sparkle 2 */}
+              <motion.div 
+                className="absolute -bottom-10 left-10 text-white z-10 text-sm"
+                style={{ y: sparkleFloat3 }}
+                animate={{ 
+                  scale: [0.7, 1.1, 0.7],
+                  opacity: [0.5, 0.9, 0.5],
+                  rotate: [0, -35, 0] 
+                }}
+                transition={{ 
+                  repeat: Infinity,
+                  duration: 3.4,
+                  ease: "easeInOut",
+                  delay: 0.5
+                }}
+              >
+                ⭐
+              </motion.div>
+              
               <div className="w-full max-w-md mx-auto">
                 {/* Schedule Item 1 */}
                 <div>
-                  <div className="flex justify-between py-4 px-4 border-t border-white">
-                    <div className="font-montserrat font-medium text-sm md:text-base text-white">
+                  <div className="grid grid-cols-2 gap-4 py-4 px-4 border-t border-white place-content-center">
+                    <div className="font-montserrat font-medium text-sm md:text-base text-white text-left pl-6">
                       3:30 - 4:00 pm
                     </div>
-                    <div className="font-montserrat font-medium text-sm md:text-base text-white">
+                    <div className="font-montserrat font-medium text-sm md:text-base text-white text-left pl-6">
                       Ceremony
                     </div>
                   </div>
@@ -375,11 +749,11 @@ const LandingPage: React.FC = () => {
                 
                 {/* Schedule Item 2 */}
                 <div>
-                  <div className="flex justify-between py-4 px-4 border-t border-white">
-                    <div className="font-montserrat font-medium text-sm md:text-base text-white">
+                  <div className="grid grid-cols-2 gap-4 py-4 px-4 border-t border-white place-content-center">
+                    <div className="font-montserrat font-medium text-sm md:text-base text-white text-left pl-6">
                       4:00 - 5:30 pm
                     </div>
-                    <div className="font-montserrat font-medium text-sm md:text-base text-white">
+                    <div className="font-montserrat font-medium text-sm md:text-base text-white text-left pl-6">
                       Cocktail hour
                     </div>
                   </div>
@@ -387,11 +761,11 @@ const LandingPage: React.FC = () => {
                 
                 {/* Schedule Item 3 */}
                 <div>
-                  <div className="flex justify-between py-4 px-4 border-t border-white">
-                    <div className="font-montserrat font-medium text-sm md:text-base text-white">
+                  <div className="grid grid-cols-2 gap-4 py-4 px-4 border-t border-white place-content-center">
+                    <div className="font-montserrat font-medium text-sm md:text-base text-white text-left pl-6">
                       5:30 - 7:00 pm
                     </div>
-                    <div className="font-montserrat font-medium text-sm md:text-base text-white">
+                    <div className="font-montserrat font-medium text-sm md:text-base text-white text-left pl-6">
                       Dinner
                     </div>
                   </div>
@@ -399,11 +773,11 @@ const LandingPage: React.FC = () => {
                 
                 {/* Schedule Item 4 */}
                 <div>
-                  <div className="flex justify-between py-4 px-4 border-t border-white">
-                    <div className="font-montserrat font-medium text-sm md:text-base text-white">
+                  <div className="grid grid-cols-2 gap-4 py-4 px-4 border-t border-white place-content-center">
+                    <div className="font-montserrat font-medium text-sm md:text-base text-white text-left pl-6">
                       7:00 - 9:15 pm
                     </div>
-                    <div className="font-montserrat font-medium text-sm md:text-base text-white">
+                    <div className="font-montserrat font-medium text-sm md:text-base text-white text-left pl-6">
                       Reception
                     </div>
                   </div>
@@ -411,11 +785,11 @@ const LandingPage: React.FC = () => {
                 
                 {/* Schedule Item 5 */}
                 <div>
-                  <div className="flex justify-between py-4 px-4 border-t border-white border-b">
-                    <div className="font-montserrat font-medium text-sm md:text-base text-white">
+                  <div className="grid grid-cols-2 gap-4 py-4 px-4 border-t border-white border-b place-content-center">
+                    <div className="font-montserrat font-medium text-sm md:text-base text-white text-left pl-6">
                       9:30 - 9:30 pm
                     </div>
-                    <div className="font-montserrat font-medium text-sm md:text-base text-white">
+                    <div className="font-montserrat font-medium text-sm md:text-base text-white text-left pl-6">
                       Shuttles leave
                     </div>
                   </div>
@@ -426,7 +800,7 @@ const LandingPage: React.FC = () => {
         </div>
         
         {/* Seat section */}
-        <div className="relative min-h-screen bg-[#B8B0A2] pt-6 pb-24" id="seat">
+        <div className="relative min-h-screen bg-[#B8B0A2] pt-0 pb-24" id="seat">
           <SeatFinder />
         </div>
       </div>
