@@ -26,10 +26,10 @@ const Navigation: React.FC<NavigationProps> = ({ activeSection }) => {
       
       // Special handling for photos section
       if (sectionId === 'photos') {
-        // Use a fixed percentage of viewport height for photos section
-        const viewportHeight = window.innerHeight;
+        // Calculate a position that will ensure the photos section is visible
+        // This is approximately 45% of the full scroll height
         const totalHeight = document.body.scrollHeight;
-        const targetPosition = totalHeight * 0.4322;
+        const targetPosition = totalHeight * 0.437;
         
         // Scroll to this specific position
         window.scrollTo({

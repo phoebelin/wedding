@@ -146,7 +146,7 @@ const LandingPage: React.FC = () => {
       className="w-full min-h-screen bg-[#B8B0A2] text-light overflow-hidden"
     >
       {/* Fixed height container to track scroll position */}
-      <div className="w-full h-[600vh]">
+      <div className="w-full h-[610vh]">
         {/* Persistent Navigation - Fixed at the top and always visible */}
         <Navigation activeSection={activeSection} />
         
