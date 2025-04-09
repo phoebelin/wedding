@@ -53,7 +53,7 @@ const LandingPage: React.FC = () => {
   const galleryY = useTransform(
     scrollYProgress,
     [0.37, 0.45, 0.47],
-    ["100vh", "20vh", "0vh"]
+    ["100vh", "0vh", "0vh"]
   );
   
   // Subtle rotation effects for itinerary images
@@ -106,11 +106,11 @@ const LandingPage: React.FC = () => {
     const unsubscribe = scrollYProgress.onChange(value => {
       if (value < 0.12) {
         setActiveSection("welcome");
-      } else if (value < 0.35) {
+      } else if (value < 0.40) {
         setActiveSection("story");
       } else if (value < 0.5) {
         setActiveSection("photos");
-      } else if (value < 0.7) {
+      } else if (value < 0.75) {
         setActiveSection("itinerary");
       } else {
         setActiveSection("seat");
@@ -319,7 +319,7 @@ const LandingPage: React.FC = () => {
         
         {/* Gallery section - integrated into main scroll */}
         <motion.div 
-          className="relative min-h-screen bg-[#B8B0A2] pt-0 pb-24" 
+          className="relative min-h-screen bg-[#B8B0A2] pt-16 pb-24" 
           id="photos"
           style={{
             y: galleryY // Only slide up from below, no fading

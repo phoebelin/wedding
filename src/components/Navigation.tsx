@@ -15,6 +15,39 @@ const Navigation: React.FC<NavigationProps> = ({ activeSection }) => {
   // State to track dot position
   const [dotPosition, setDotPosition] = useState({ left: 0, width: 0 });
   
+  // Handle navigation click
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, sectionId: string) => {
+    e.preventDefault();
+    
+    const section = document.getElementById(sectionId);
+    if (section) {
+      // Get the navigation bar height
+      const navHeight = 60; // Approximate height of nav bar
+      
+      // Special handling for photos section
+      if (sectionId === 'photos') {
+        // Use a fixed percentage of viewport height for photos section
+        const viewportHeight = window.innerHeight;
+        const totalHeight = document.body.scrollHeight;
+        const targetPosition = totalHeight * 0.4322;
+        
+        // Scroll to this specific position
+        window.scrollTo({
+          top: targetPosition,
+          behavior: 'smooth'
+        });
+        return;
+      }
+      
+      // Normal handling for other sections
+      const sectionPosition = section.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({
+        top: sectionPosition - navHeight,
+        behavior: 'smooth'
+      });
+    }
+  };
+  
   // Update dot position based on active section
   useEffect(() => {
     let targetRef;
@@ -55,6 +88,7 @@ const Navigation: React.FC<NavigationProps> = ({ activeSection }) => {
       <div ref={welcomeRef} className="relative">
         <motion.a 
           href="#welcome"
+          onClick={(e) => handleNavClick(e, 'welcome')}
           className={`font-montserrat font-medium text-sm ${activeSection === "welcome" ? "font-bold" : ""}`}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -69,6 +103,7 @@ const Navigation: React.FC<NavigationProps> = ({ activeSection }) => {
       <div ref={photosRef} className="relative">
         <motion.a 
           href="#photos"
+          onClick={(e) => handleNavClick(e, 'photos')}
           className={`font-montserrat font-medium text-sm ${activeSection === "photos" ? "font-bold" : ""}`}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -83,6 +118,7 @@ const Navigation: React.FC<NavigationProps> = ({ activeSection }) => {
       <div ref={itineraryRef} className="relative">
         <motion.a 
           href="#itinerary"
+          onClick={(e) => handleNavClick(e, 'itinerary')}
           className={`font-montserrat font-medium text-sm ${activeSection === "itinerary" ? "font-bold" : ""}`}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -97,6 +133,7 @@ const Navigation: React.FC<NavigationProps> = ({ activeSection }) => {
       <div ref={seatRef} className="relative">
         <motion.a 
           href="#seat"
+          onClick={(e) => handleNavClick(e, 'seat')}
           className={`font-montserrat font-medium text-sm ${activeSection === "seat" ? "font-bold" : ""}`}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
