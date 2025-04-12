@@ -39,6 +39,21 @@ const Navigation: React.FC<NavigationProps> = ({ activeSection }) => {
         return;
       }
       
+      // Special handling for seat section
+      if (sectionId === 'seat') {
+        // Calculate a position that will ensure the seat section is visible
+        // This is approximately 85% of the full scroll height
+        const totalHeight = document.body.scrollHeight;
+        const targetPosition = totalHeight * 0.85;
+        
+        // Scroll to this specific position
+        window.scrollTo({
+          top: targetPosition,
+          behavior: 'smooth'
+        });
+        return;
+      }
+      
       // Normal handling for other sections
       const sectionPosition = section.getBoundingClientRect().top + window.scrollY;
       window.scrollTo({

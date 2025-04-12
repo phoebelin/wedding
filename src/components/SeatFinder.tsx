@@ -84,7 +84,7 @@ const SeatFinder: React.FC<SeatFinderProps> = () => {
             {/* Error Message */}
             {notFound && (
               <p className="mt-3 text-red-500 font-montserrat text-sm">
-                name not found
+                Guest not found. Please check the spelling or try a different name.
               </p>
             )}
           </div>
