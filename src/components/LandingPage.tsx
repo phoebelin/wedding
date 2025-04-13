@@ -3,8 +3,10 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import Navigation from './Navigation';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import SeatFinder from './SeatFinder';
+import { useLocation } from 'react-router-dom';
 
 const LandingPage: React.FC = () => {
+  const location = useLocation();
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeSection, setActiveSection] = useState<string>("welcome");
@@ -139,6 +141,57 @@ const LandingPage: React.FC = () => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
+
+  // Handle initial scroll based on URL parameters
+  useEffect(() => {
+    // Parse the section parameter from the URL
+    const queryParams = new URLSearchParams(location.search);
+    const section = queryParams.get('section');
+    
+    if (section) {
+      // Find the section element
+      const sectionElement = document.getElementById(section);
+      
+      if (sectionElement) {
+        // Get the navigation bar height
+        const navHeight = 60; // Approximate height of nav bar
+        
+        // Special handling for different sections
+        if (section === 'photos') {
+          // Calculate a position that will ensure the photos section is visible
+          const totalHeight = document.body.scrollHeight;
+          const targetPosition = totalHeight * 0.437;
+          
+          // Scroll to this specific position
+          window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth'
+          });
+          return;
+        }
+        
+        if (section === 'seat') {
+          // Calculate a position that will ensure the seat section is visible
+          const totalHeight = document.body.scrollHeight;
+          const targetPosition = totalHeight * 0.85;
+          
+          // Scroll to this specific position
+          window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth'
+          });
+          return;
+        }
+        
+        // Normal handling for other sections
+        const sectionPosition = sectionElement.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({
+          top: sectionPosition - navHeight,
+          behavior: 'smooth'
+        });
+      }
+    }
+  }, [location]);
 
   return (
     <div 
