@@ -4,11 +4,14 @@ import LandingPage from './components/LandingPage';
 import GuestDetailPage from './components/GuestDetailPage';
 
 const App: React.FC = () => {
+  // Get base path from package.json homepage or default to '/'
+  const basePath = process.env.PUBLIC_URL || '/wedding';
+  
   return (
-    <Router>
+    <Router basename={basePath}>
       <div className="App">
         <Switch>
-          <Route path="/guest-detail" component={GuestDetailPage} />
+          <Route path="/guest" component={GuestDetailPage} />
           <Route path="/" component={LandingPage} />
         </Switch>
       </div>

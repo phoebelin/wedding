@@ -26,6 +26,11 @@ jobs:
       - name: Build
         run: npm run predeploy
         
+      - name: Ensure image assets are copied
+        run: |
+          mkdir -p docs/images/guests
+          cp -r public/images/* docs/images/
+        
       - name: Commit built files
         run: |
           git config --global user.name 'GitHub Actions'

@@ -9,12 +9,22 @@ interface GuestData {
   image: string;
 }
 
+// Default guest data in case state is lost on refresh
+const defaultGuest = {
+  name: "David Miller",
+  table: 9,
+  note: "We're so glad you're here, David! You have been such a light to us, thank you for joining. Can't wait to spend more time with you at dinner :) We're so glad you're here, David! You have been such a light to us, thank you for joining. Can't wait to spend more time with you at dinner :)",
+  image: "guests/guest-david.jpg"
+};
+
 // Custom navigation component specifically for the guest detail page
 const GuestPageNavigation: React.FC = () => {
   const history = useHistory();
   
   const handleNavClick = (section: string) => {
-    history.push(`/?section=${section}`);
+    // Use absolute paths with PUBLIC_URL to ensure correct navigation in GitHub Pages
+    const basePath = process.env.PUBLIC_URL || '';
+    history.push(`${basePath}/?section=${section}`);
   };
 
   return (
@@ -69,28 +79,28 @@ const GuestPageNavigation: React.FC = () => {
 const GuestDetailPage: React.FC = () => {
   const history = useHistory();
   const location = useLocation();
-  const guestData = location.state as GuestData;
+  const [guest, setGuest] = useState<GuestData>(defaultGuest);
   const [generatedText, setGeneratedText] = useState('');
   const [isGenerating, setIsGenerating] = useState(true);
+
+  // Set guest data from location state or use default if not available
+  useEffect(() => {
+    if (location.state) {
+      setGuest(location.state as GuestData);
+    }
+  }, [location.state]);
 
   // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-  
-  // Handle redirect if no guest data
-  useEffect(() => {
-    if (!guestData) {
-      history.replace('/');
-    }
-  }, [guestData, history]);
 
   // Text generation effect
   useEffect(() => {
-    if (!guestData?.note) return;
+    if (!guest?.note) return;
     
     let currentIndex = 0;
-    const fullText = guestData.note;
+    const fullText = guest.note;
     let isMounted = true;
     
     // Reset text when starting generation
@@ -124,16 +134,13 @@ const GuestDetailPage: React.FC = () => {
       clearTimeout(timer);
       setIsGenerating(false);
     };
-  }, [guestData?.note]);
+  }, [guest?.note]);
 
   const handleSearchAgain = () => {
-    history.push('/');
+    // Use absolute path with PUBLIC_URL to ensure correct navigation in GitHub Pages
+    const basePath = process.env.PUBLIC_URL || '';
+    history.push(`${basePath}/`);
   };
-
-  // If no guestData, don't render the component
-  if (!guestData) {
-    return null;
-  }
 
   return (
     <div className="w-full bg-[#B8B0A2] min-h-screen flex flex-col items-center">
@@ -148,8 +155,8 @@ const GuestDetailPage: React.FC = () => {
         <div className="w-full flex flex-col items-center gap-2">
           {/* Name and Table */}
           <div className="flex flex-col items-center">
-            <h1 className="font-alex-brush text-[36px] text-white">{guestData.name}</h1>
-            <p className="font-montserrat font-medium text-[36px] text-white">Table {guestData.table}</p>
+            <h1 className="font-alex-brush text-[36px] text-white">{guest.name}</h1>
+            <p className="font-montserrat font-medium text-[36px] text-white">Table {guest.table}</p>
           </div>
           
           {/* Personalized Note */}
@@ -176,10 +183,10 @@ const GuestDetailPage: React.FC = () => {
                 marginRight: 'calc(-50vw + 50%)'
               }}
             >
-              {guestData.image ? (
+              {guest.image ? (
                 <img 
-                  src={`${process.env.PUBLIC_URL}/images/${guestData.image}`}
-                  alt={`${guestData.name}'s personalized`}
+                  src={`${process.env.PUBLIC_URL}/images/${guest.image}`}
+                  alt={`${guest.name}'s personalized`}
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     // Fallback to placeholder if image fails to load

@@ -30,7 +30,9 @@ const SeatFinder: React.FC<SeatFinderProps> = () => {
     
     if (guest) {
       // Navigate to guest detail page with the guest data
-      history.push('/guest-detail', guest);
+      // Use PUBLIC_URL to ensure correct path in GitHub Pages
+      const basePath = process.env.PUBLIC_URL || '';
+      history.push(`${basePath}/guest`, guest);
     } else {
       setNotFound(true);
     }
