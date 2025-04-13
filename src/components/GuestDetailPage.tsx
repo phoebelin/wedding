@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 interface GuestData {
@@ -9,20 +9,12 @@ interface GuestData {
   image: string;
 }
 
-// Default guest data in case state is lost on refresh
-const defaultGuest = {
-  name: "David Miller",
-  table: 9,
-  note: "We're so glad you're here, David! You have been such a light to us, thank you for joining. Can't wait to spend more time with you at dinner :) We're so glad you're here, David! You have been such a light to us, thank you for joining. Can't wait to spend more time with you at dinner :)",
-  image: "guests/guest-david.jpg"
-};
-
 // Custom navigation component specifically for the guest detail page
 const GuestPageNavigation: React.FC = () => {
+  const history = useHistory();
+  
   const handleNavClick = (section: string) => {
-    // Use absolute paths with PUBLIC_URL to ensure correct navigation in GitHub Pages
-    const basePath = process.env.PUBLIC_URL || '';
-    window.location.href = `${basePath}/?section=${section}`;
+    history.push(`/#section=${section}`);
   };
 
   return (
@@ -75,31 +67,55 @@ const GuestPageNavigation: React.FC = () => {
 };
 
 const GuestDetailPage: React.FC = () => {
+  const history = useHistory();
   const location = useLocation();
-  const [guest, setGuest] = useState<GuestData>(defaultGuest);
+  const [guestData, setGuestData] = useState<GuestData | null>(null);
   const [generatedText, setGeneratedText] = useState('');
   const [isGenerating, setIsGenerating] = useState(true);
 
-  // Set guest data from URL parameters or use default if not available
+  // Find guest data based on URL query parameters
   useEffect(() => {
-    // Try to get guest data from URL parameters first
-    const params = new URLSearchParams(location.search);
-    const name = params.get('name');
-    const tableStr = params.get('table');
-    const note = params.get('note');
-    const image = params.get('image');
+    // Get the guest name from URL parameters
+    const searchParams = new URLSearchParams(location.search);
+    const guestName = searchParams.get('name');
     
-    // If we have URL parameters, use them
-    if (name && tableStr && note && image) {
-      const table = parseInt(tableStr, 10);
-      setGuest({ name, table, note, image });
+    if (guestName) {
+      // Import the guest data from the same array used in SeatFinder
+      // In a real app, this would be a database or API call
+      import('../components/SeatFinder').then(module => {
+        const guestList = module.guestData;
+        const foundGuest = guestList.find(g => g.name === guestName);
+        
+        if (foundGuest) {
+          setGuestData(foundGuest);
+        } else {
+          // If guest not found, redirect to home
+          history.replace('/');
+        }
+      }).catch(() => {
+        // Fallback: Directly import the guest data array
+        const guestDataArray = [
+          { name: "John Smith", table: 5, note: "Looking forward to having you join us!", image: "guests/guest-john.jpg" },
+          { name: "Emma Johnson", table: 3, note: "Can't wait to celebrate with you!", image: "guests/guest-emma.jpg" },
+          { name: "Michael Williams", table: 8, note: "We're so happy you can make it!", image: "guests/guest-michael.jpg" },
+          { name: "Sarah Brown", table: 2, note: "Thank you for being part of our special day!", image: "guests/guest-sarah.jpg" },
+          { name: "David Miller", table: 9, note: "We're so glad you're here, David! You have been such a light to us, thank you for joining. Can't wait to spend more time with you at dinner :) We're so glad you're here, David! You have been such a light to us, thank you for joining. Can't wait to spend more time with you at dinner :)", image: "guests/guest-david.jpg" },
+        ];
+        
+        const foundGuest = guestDataArray.find(g => g.name === guestName);
+        
+        if (foundGuest) {
+          setGuestData(foundGuest);
+        } else {
+          // If guest not found, redirect to home
+          history.replace('/');
+        }
+      });
+    } else {
+      // If no name parameter, redirect to home
+      history.replace('/');
     }
-    // Otherwise fall back to location state if available
-    else if (location.state) {
-      setGuest(location.state as GuestData);
-    }
-    // If neither is available, we'll use the default guest
-  }, [location]);
+  }, [location.search, history]);
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -108,10 +124,10 @@ const GuestDetailPage: React.FC = () => {
 
   // Text generation effect
   useEffect(() => {
-    if (!guest?.note) return;
+    if (!guestData?.note) return;
     
     let currentIndex = 0;
-    const fullText = guest.note;
+    const fullText = guestData.note;
     let isMounted = true;
     
     // Reset text when starting generation
@@ -145,13 +161,20 @@ const GuestDetailPage: React.FC = () => {
       clearTimeout(timer);
       setIsGenerating(false);
     };
-  }, [guest?.note]);
+  }, [guestData?.note]);
 
   const handleSearchAgain = () => {
-    // Use absolute path with PUBLIC_URL to ensure correct navigation in GitHub Pages
-    const basePath = process.env.PUBLIC_URL || '';
-    window.location.href = `${basePath}/`;
+    history.push('/');
   };
+
+  // If no guestData, don't render the component
+  if (!guestData) {
+    return (
+      <div className="w-full bg-[#B8B0A2] min-h-screen flex flex-col items-center justify-center">
+        <p className="font-montserrat font-medium text-[15px] text-white">Loading guest information...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full bg-[#B8B0A2] min-h-screen flex flex-col items-center">
@@ -166,8 +189,8 @@ const GuestDetailPage: React.FC = () => {
         <div className="w-full flex flex-col items-center gap-2">
           {/* Name and Table */}
           <div className="flex flex-col items-center">
-            <h1 className="font-alex-brush text-[36px] text-white">{guest.name}</h1>
-            <p className="font-montserrat font-medium text-[36px] text-white">Table {guest.table}</p>
+            <h1 className="font-alex-brush text-[36px] text-white">{guestData.name}</h1>
+            <p className="font-montserrat font-medium text-[36px] text-white">Table {guestData.table}</p>
           </div>
           
           {/* Personalized Note */}
@@ -194,10 +217,10 @@ const GuestDetailPage: React.FC = () => {
                 marginRight: 'calc(-50vw + 50%)'
               }}
             >
-              {guest.image ? (
+              {guestData.image ? (
                 <img 
-                  src={`${process.env.PUBLIC_URL}/images/${guest.image}`}
-                  alt={`${guest.name}'s personalized`}
+                  src={`${process.env.PUBLIC_URL}/images/${guestData.image}`}
+                  alt={`${guestData.name}'s personalized`}
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     // Fallback to placeholder if image fails to load

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 // Mock data for guest seat assignments
-const guestData = [
+export const guestData = [
   { name: "John Smith", table: 5, note: "Looking forward to having you join us!", image: "guests/guest-john.jpg" },
   { name: "Emma Johnson", table: 3, note: "Can't wait to celebrate with you!", image: "guests/guest-emma.jpg" },
   { name: "Michael Williams", table: 8, note: "We're so happy you can make it!", image: "guests/guest-michael.jpg" },
@@ -29,18 +29,8 @@ const SeatFinder: React.FC<SeatFinderProps> = () => {
     );
     
     if (guest) {
-      // Navigate to guest detail page using URL parameters instead of state
-      // This is more reliable across different environments
-      const basePath = process.env.PUBLIC_URL || '';
-      
-      // Encode the guest data into URL parameters
-      const params = new URLSearchParams();
-      params.set('name', guest.name);
-      params.set('table', guest.table.toString());
-      params.set('note', guest.note);
-      params.set('image', guest.image);
-      
-      history.push(`${basePath}/guest?${params.toString()}`);
+      // Use query parameters instead of state
+      history.push(`/guest-detail?name=${encodeURIComponent(guest.name)}`);
     } else {
       setNotFound(true);
     }
