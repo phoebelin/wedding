@@ -266,7 +266,7 @@ const SeatFinder: React.FC<SeatFinderProps> = () => {
               {searchResult.image ? (
                 <img 
                   src={`${process.env.PUBLIC_URL}/images/${searchResult.image}`}
-                  alt={`${searchResult.name}'s personalized image`}
+                  alt={`${searchResult.name}'s personalized`}
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     // Fallback to placeholder if image fails to load
@@ -277,7 +277,7 @@ const SeatFinder: React.FC<SeatFinderProps> = () => {
               ) : (
                 <div className="w-full h-full bg-[#D9D9D9] flex items-center justify-center">
                   <p className="font-montserrat font-medium text-sm text-[#857E73]">
-                    Personalized Image
+                    Personalized
                   </p>
                 </div>
               )}
