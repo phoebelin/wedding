@@ -29,10 +29,18 @@ const SeatFinder: React.FC<SeatFinderProps> = () => {
     );
     
     if (guest) {
-      // Navigate to guest detail page with the guest data
-      // Use PUBLIC_URL to ensure correct path in GitHub Pages
+      // Navigate to guest detail page using URL parameters instead of state
+      // This is more reliable across different environments
       const basePath = process.env.PUBLIC_URL || '';
-      history.push(`${basePath}/guest`, guest);
+      
+      // Encode the guest data into URL parameters
+      const params = new URLSearchParams();
+      params.set('name', guest.name);
+      params.set('table', guest.table.toString());
+      params.set('note', guest.note);
+      params.set('image', guest.image);
+      
+      history.push(`${basePath}/guest?${params.toString()}`);
     } else {
       setNotFound(true);
     }

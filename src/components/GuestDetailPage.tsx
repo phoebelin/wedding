@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 interface GuestData {
@@ -19,12 +19,10 @@ const defaultGuest = {
 
 // Custom navigation component specifically for the guest detail page
 const GuestPageNavigation: React.FC = () => {
-  const history = useHistory();
-  
   const handleNavClick = (section: string) => {
     // Use absolute paths with PUBLIC_URL to ensure correct navigation in GitHub Pages
     const basePath = process.env.PUBLIC_URL || '';
-    history.push(`${basePath}/?section=${section}`);
+    window.location.href = `${basePath}/?section=${section}`;
   };
 
   return (
@@ -77,18 +75,31 @@ const GuestPageNavigation: React.FC = () => {
 };
 
 const GuestDetailPage: React.FC = () => {
-  const history = useHistory();
   const location = useLocation();
   const [guest, setGuest] = useState<GuestData>(defaultGuest);
   const [generatedText, setGeneratedText] = useState('');
   const [isGenerating, setIsGenerating] = useState(true);
 
-  // Set guest data from location state or use default if not available
+  // Set guest data from URL parameters or use default if not available
   useEffect(() => {
-    if (location.state) {
+    // Try to get guest data from URL parameters first
+    const params = new URLSearchParams(location.search);
+    const name = params.get('name');
+    const tableStr = params.get('table');
+    const note = params.get('note');
+    const image = params.get('image');
+    
+    // If we have URL parameters, use them
+    if (name && tableStr && note && image) {
+      const table = parseInt(tableStr, 10);
+      setGuest({ name, table, note, image });
+    }
+    // Otherwise fall back to location state if available
+    else if (location.state) {
       setGuest(location.state as GuestData);
     }
-  }, [location.state]);
+    // If neither is available, we'll use the default guest
+  }, [location]);
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -139,7 +150,7 @@ const GuestDetailPage: React.FC = () => {
   const handleSearchAgain = () => {
     // Use absolute path with PUBLIC_URL to ensure correct navigation in GitHub Pages
     const basePath = process.env.PUBLIC_URL || '';
-    history.push(`${basePath}/`);
+    window.location.href = `${basePath}/`;
   };
 
   return (
