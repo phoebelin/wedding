@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { guestDataService } from '../services/guestDataService';
 
-// Mock data for guest seat assignments
+// Legacy export for backward compatibility
 export const guestData = [
   { name: "John Smith", table: 5, note: "Looking forward to having you join us!", image: "guests/guest-john.jpg" },
   { name: "Emma Johnson", table: 3, note: "Can't wait to celebrate with you!", image: "guests/guest-emma.jpg" },
@@ -15,24 +16,31 @@ interface SeatFinderProps {}
 const SeatFinder: React.FC<SeatFinderProps> = () => {
   const [searchName, setSearchName] = useState('');
   const [notFound, setNotFound] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
   const history = useHistory();
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (!searchName.trim()) return;
     
-    // Reset states
+    // Reset states and show loading
     setNotFound(false);
+    setIsSearching(true);
     
-    // Search for guest
-    const guest = guestData.find(g => 
-      g.name.toLowerCase().includes(searchName.toLowerCase())
-    );
-    
-    if (guest) {
-      // Use query parameters instead of state
-      history.push(`/guest-detail?name=${encodeURIComponent(guest.name)}`);
-    } else {
+    try {
+      // Search for guest using the service
+      const guest = await guestDataService.findGuest(searchName);
+      
+      if (guest) {
+        // Use query parameters instead of state
+        history.push(`/guest-detail?name=${encodeURIComponent(guest.name)}`);
+      } else {
+        setNotFound(true);
+      }
+    } catch (error) {
+      console.error('Error searching for guest:', error);
       setNotFound(true);
+    } finally {
+      setIsSearching(false);
     }
   };
 
@@ -63,21 +71,33 @@ const SeatFinder: React.FC<SeatFinderProps> = () => {
               placeholder=""
               value={searchName}
               onChange={(e) => setSearchName(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+              disabled={isSearching}
             />
           </div>
           
           {/* Find Button */}
           <div 
-            className="w-full bg-[#857E73] rounded-xl flex items-center justify-center cursor-pointer"
+            className={`w-full rounded-xl flex items-center justify-center ${
+              isSearching 
+                ? 'bg-gray-400 cursor-not-allowed' 
+                : 'bg-[#857E73] cursor-pointer'
+            }`}
             style={{ height: '64px', maxWidth: '301px' }}
-            onClick={handleSearch}
+            onClick={!isSearching ? handleSearch : undefined}
           >
-            <span className="font-montserrat font-medium text-sm text-white mr-1">Find</span>
-            <img 
-              src={`${process.env.PUBLIC_URL}/images/chevron-right.svg`} 
-              alt="Find" 
-              className="w-3.5 h-3.5"
-            />
+            {isSearching ? (
+              <span className="font-montserrat font-medium text-sm text-white">Searching...</span>
+            ) : (
+              <>
+                <span className="font-montserrat font-medium text-sm text-white mr-1">Find</span>
+                <img 
+                  src={`${process.env.PUBLIC_URL}/images/chevron-right.svg`} 
+                  alt="Find" 
+                  className="w-3.5 h-3.5"
+                />
+              </>
+            )}
           </div>
           
           {/* Error Message */}

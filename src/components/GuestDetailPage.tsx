@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { guestDataService, Guest } from '../services/guestDataService';
 
-interface GuestData {
-  name: string;
-  table: number;
-  note: string;
-  image: string;
-}
+// Legacy interface removed - now using Guest from service
 
 // Custom navigation component specifically for the guest detail page
 const GuestPageNavigation: React.FC = () => {
@@ -69,52 +65,44 @@ const GuestPageNavigation: React.FC = () => {
 const GuestDetailPage: React.FC = () => {
   const history = useHistory();
   const location = useLocation();
-  const [guestData, setGuestData] = useState<GuestData | null>(null);
+  const [guestData, setGuestData] = useState<Guest | null>(null);
   const [generatedText, setGeneratedText] = useState('');
   const [isGenerating, setIsGenerating] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Find guest data based on URL query parameters
   useEffect(() => {
-    // Get the guest name from URL parameters
-    const searchParams = new URLSearchParams(location.search);
-    const guestName = searchParams.get('name');
-    
-    if (guestName) {
-      // Import the guest data from the same array used in SeatFinder
-      // In a real app, this would be a database or API call
-      import('../components/SeatFinder').then(module => {
-        const guestList = module.guestData;
-        const foundGuest = guestList.find(g => g.name === guestName);
+    const loadGuestData = async () => {
+      // Get the guest name from URL parameters
+      const searchParams = new URLSearchParams(location.search);
+      const guestName = searchParams.get('name');
+      
+      if (!guestName) {
+        // If no name parameter, redirect to home
+        history.replace('/');
+        return;
+      }
+
+      try {
+        setIsLoading(true);
+        const foundGuest = await guestDataService.findGuest(guestName);
         
         if (foundGuest) {
           setGuestData(foundGuest);
         } else {
           // If guest not found, redirect to home
+          console.warn(`Guest not found: ${guestName}`);
           history.replace('/');
         }
-      }).catch(() => {
-        // Fallback: Directly import the guest data array
-        const guestDataArray = [
-          { name: "John Smith", table: 5, note: "Looking forward to having you join us!", image: "guests/guest-john.jpg" },
-          { name: "Emma Johnson", table: 3, note: "Can't wait to celebrate with you!", image: "guests/guest-emma.jpg" },
-          { name: "Michael Williams", table: 8, note: "We're so happy you can make it!", image: "guests/guest-michael.jpg" },
-          { name: "Sarah Brown", table: 2, note: "Thank you for being part of our special day!", image: "guests/guest-sarah.jpg" },
-          { name: "David Miller", table: 9, note: "We're so glad you're here, David! You have been such a light to us, thank you for joining. Can't wait to spend more time with you at dinner :) We're so glad you're here, David! You have been such a light to us, thank you for joining. Can't wait to spend more time with you at dinner :)", image: "guests/guest-david.jpg" },
-        ];
-        
-        const foundGuest = guestDataArray.find(g => g.name === guestName);
-        
-        if (foundGuest) {
-          setGuestData(foundGuest);
-        } else {
-          // If guest not found, redirect to home
-          history.replace('/');
-        }
-      });
-    } else {
-      // If no name parameter, redirect to home
-      history.replace('/');
-    }
+      } catch (error) {
+        console.error('Error loading guest data:', error);
+        history.replace('/');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadGuestData();
   }, [location.search, history]);
 
   // Scroll to top when component mounts
@@ -167,8 +155,8 @@ const GuestDetailPage: React.FC = () => {
     history.push('/');
   };
 
-  // If no guestData, don't render the component
-  if (!guestData) {
+  // If loading or no guestData, show loading state
+  if (isLoading || !guestData) {
     return (
       <div className="w-full bg-[#B8B0A2] min-h-screen flex flex-col items-center justify-center">
         <p className="font-montserrat font-medium text-[15px] text-white">Loading guest information...</p>

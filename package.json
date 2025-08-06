@@ -9,6 +9,7 @@
     "@types/react": "^18.0.35",
     "@types/react-dom": "^18.0.11",
     "framer-motion": "^10.12.8",
+    "papaparse": "^5.5.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-intersection-observer": "^9.4.3",
@@ -42,6 +43,7 @@
     ]
   },
   "devDependencies": {
+    "@types/papaparse": "^5.3.16",
     "@types/react-router-dom": "^5.3.3",
     "autoprefixer": "^10.4.14",
     "postcss": "^8.4.23",
