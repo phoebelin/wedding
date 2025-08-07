@@ -14,6 +14,10 @@ const LandingPage: React.FC = () => {
   // Animation states for story text
   const [storyVisible, setStoryVisible] = useState(false);
   
+  // Lightbox state
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<{src: string, alt: string, caption: string} | null>(null);
+  
   // Parallax scroll effect with enhanced values
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -192,6 +196,33 @@ const LandingPage: React.FC = () => {
       }
     }
   }, [location]);
+
+  // Lightbox functions
+  const openLightbox = (src: string, alt: string, caption: string) => {
+    setSelectedImage({ src, alt, caption });
+    setLightboxOpen(true);
+    // Prevent body scroll when lightbox is open
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeLightbox = () => {
+    setLightboxOpen(false);
+    setSelectedImage(null);
+    // Restore body scroll
+    document.body.style.overflow = 'auto';
+  };
+
+  // Handle escape key to close lightbox
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && lightboxOpen) {
+        closeLightbox();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [lightboxOpen]);
 
   return (
     <div 
@@ -381,11 +412,11 @@ const LandingPage: React.FC = () => {
           {/* Photo Gallery Section */}
           <div className="w-full flex flex-col">
             {/* Photo Card 1 */}
-            <div className="w-full relative">
+            <div className="w-full relative cursor-pointer" onClick={() => openLightbox(`${process.env.PUBLIC_URL}/images/gallery-1.png`, "David 3 years old", "David 3 years old")}>
               <img 
                 src={`${process.env.PUBLIC_URL}/images/gallery-1.png`}
                 alt="David 3 years old"
-                className="w-screen h-60 object-cover"
+                className="w-screen object-contain"
                 loading="eager"
               />
               <div className="absolute bottom-4 left-4 bg-[rgba(8,8,7,0.6)] px-3 py-2 rounded-lg">
@@ -396,11 +427,11 @@ const LandingPage: React.FC = () => {
             </div>
             
             {/* Photo Card 2 */}
-            <div className="w-full relative">
+            <div className="w-full relative cursor-pointer" onClick={() => openLightbox(`${process.env.PUBLIC_URL}/images/gallery-2.png`, "Phoebe 3 years old", "Phoebe 3 years old")}>
               <img 
                 src={`${process.env.PUBLIC_URL}/images/gallery-2.png`}
                 alt="Phoebe 3 years old"
-                className="w-screen h-60 object-cover"
+                className="w-screen object-contain"
                 loading="eager"
               />
               <div className="absolute bottom-4 left-4 bg-[rgba(8,8,7,0.6)] px-3 py-2 rounded-lg">
@@ -411,11 +442,11 @@ const LandingPage: React.FC = () => {
             </div>
             
             {/* Photo Card 3 */}
-            <div className="w-full relative">
+            <div className="w-full relative cursor-pointer" onClick={() => openLightbox(`${process.env.PUBLIC_URL}/images/gallery-3.png`, "David 17 years old", "David 17 years old")}>
               <img 
                 src={`${process.env.PUBLIC_URL}/images/gallery-3.png`}
                 alt="David 17 years old"
-                className="w-screen h-60 object-cover"
+                className="w-screen object-contain"
                 loading="eager"
               />
               <div className="absolute bottom-4 left-4 bg-[rgba(8,8,7,0.6)] px-3 py-2 rounded-lg">
@@ -426,11 +457,11 @@ const LandingPage: React.FC = () => {
             </div>
             
             {/* Photo Card 4 */}
-            <div className="w-full relative">
+            <div className="w-full relative cursor-pointer" onClick={() => openLightbox(`${process.env.PUBLIC_URL}/images/gallery-4.png`, "Phoebe 17 years old", "Phoebe 17 years old")}>
               <img 
                 src={`${process.env.PUBLIC_URL}/images/gallery-4.png`}
                 alt="Phoebe 17 years old"
-                className="w-screen h-60 object-cover"
+                className="w-screen object-contain"
                 loading="eager"
               />
               <div className="absolute bottom-4 left-4 bg-[rgba(8,8,7,0.6)] px-3 py-2 rounded-lg">
@@ -857,6 +888,48 @@ const LandingPage: React.FC = () => {
           <SeatFinder />
         </div>
       </div>
+
+      {/* Lightbox Overlay */}
+      {lightboxOpen && selectedImage && (
+        <motion.div
+          className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={closeLightbox}
+        >
+          <motion.div
+            className="relative max-w-4xl max-h-full"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.8, opacity: 0 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close button */}
+            <button
+              onClick={closeLightbox}
+              className="absolute -top-12 right-0 text-white text-2xl font-bold hover:text-gray-300 transition-colors z-10"
+              aria-label="Close lightbox"
+            >
+              ×
+            </button>
+            
+            {/* Image */}
+            <img
+              src={selectedImage.src}
+              alt={selectedImage.alt}
+              className="max-w-full max-h-[80vh] object-contain"
+            />
+            
+            {/* Caption */}
+            <div className="absolute bottom-4 left-4 bg-[rgba(8,8,7,0.8)] px-3 py-2 rounded-lg">
+              <p className="font-montserrat font-medium text-sm text-white">
+                {selectedImage.caption}
+              </p>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
     </div>
   );
 };

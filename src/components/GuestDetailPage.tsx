@@ -203,7 +203,25 @@ const GuestDetailPage: React.FC = () => {
   }, [guestData?.note]);
 
   const handleSearchAgain = () => {
+    // Navigate to home page first
     history.push('/');
+    
+    // Then scroll to the seat section after a short delay
+    setTimeout(() => {
+      const section = document.getElementById('seat');
+      if (section) {
+        // Calculate a position that will ensure the seat section is visible
+        // This is approximately 85% of the full scroll height
+        const totalHeight = document.body.scrollHeight;
+        const targetPosition = totalHeight * 0.85;
+        
+        // Scroll to this specific position
+        window.scrollTo({
+          top: targetPosition,
+          behavior: 'smooth'
+        });
+      }
+    }, 100); // Small delay to ensure navigation completes
   };
 
   // If loading or no guestData, show loading state
