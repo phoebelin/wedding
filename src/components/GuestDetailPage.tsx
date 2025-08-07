@@ -9,15 +9,64 @@ import { guestDataService, Guest } from '../services/guestDataService';
 const GuestPageNavigation: React.FC = () => {
   const history = useHistory();
   
-  const handleNavClick = (section: string) => {
-    history.push(`/#section=${section}`);
+  const handleNavClick = (e: React.MouseEvent<HTMLDivElement>, sectionId: string) => {
+    e.preventDefault();
+    
+    // First navigate to the home page
+    history.push('/');
+    
+    // Then scroll to the appropriate section after a short delay
+    setTimeout(() => {
+      const section = document.getElementById(sectionId);
+      if (section) {
+        // Get the navigation bar height
+        const navHeight = 60; // Approximate height of nav bar
+        
+        // Special handling for photos section
+        if (sectionId === 'photos') {
+          // Calculate a position that will ensure the photos section is visible
+          // This is approximately 45% of the full scroll height
+          const totalHeight = document.body.scrollHeight;
+          const targetPosition = totalHeight * 0.437;
+          
+          // Scroll to this specific position
+          window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth'
+          });
+          return;
+        }
+        
+        // Special handling for seat section
+        if (sectionId === 'seat') {
+          // Calculate a position that will ensure the seat section is visible
+          // This is approximately 85% of the full scroll height
+          const totalHeight = document.body.scrollHeight;
+          const targetPosition = totalHeight * 0.85;
+          
+          // Scroll to this specific position
+          window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth'
+          });
+          return;
+        }
+        
+        // Normal handling for other sections
+        const sectionPosition = section.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({
+          top: sectionPosition - navHeight,
+          behavior: 'smooth'
+        });
+      }
+    }, 100); // Small delay to ensure navigation completes
   };
 
   return (
     <nav className="fixed top-0 left-0 w-full flex justify-between items-center px-6 py-6 z-50">
       <div className="relative">
         <motion.div 
-          onClick={() => handleNavClick('welcome')}
+          onClick={(e) => handleNavClick(e, 'welcome')}
           className="font-montserrat font-medium text-sm text-white cursor-pointer"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -28,7 +77,7 @@ const GuestPageNavigation: React.FC = () => {
       
       <div className="relative">
         <motion.div 
-          onClick={() => handleNavClick('photos')}
+          onClick={(e) => handleNavClick(e, 'photos')}
           className="font-montserrat font-medium text-sm text-white cursor-pointer"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -39,7 +88,7 @@ const GuestPageNavigation: React.FC = () => {
       
       <div className="relative">
         <motion.div 
-          onClick={() => handleNavClick('itinerary')}
+          onClick={(e) => handleNavClick(e, 'itinerary')}
           className="font-montserrat font-medium text-sm text-white cursor-pointer"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -50,7 +99,7 @@ const GuestPageNavigation: React.FC = () => {
       
       <div className="relative">
         <motion.div 
-          onClick={() => handleNavClick('seat')}
+          onClick={(e) => handleNavClick(e, 'seat')}
           className="font-montserrat font-medium text-sm text-white font-bold cursor-pointer"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -105,10 +154,12 @@ const GuestDetailPage: React.FC = () => {
     loadGuestData();
   }, [location.search, history]);
 
-  // Scroll to top when component mounts
+  // Scroll to top when guest data loads
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    if (guestData && !isLoading) {
+      window.scrollTo(0, 0);
+    }
+  }, [guestData, isLoading]);
 
   // Text generation effect
   useEffect(() => {
