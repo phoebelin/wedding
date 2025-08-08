@@ -39,16 +39,12 @@ const Navigation: React.FC<NavigationProps> = ({ activeSection }) => {
         return;
       }
       
-      // Special handling for seat section
+      // Special handling for seat section - use normal positioning for better centering
       if (sectionId === 'seat') {
-        // Calculate a position that will ensure the seat section is visible
-        // This is approximately 85% of the full scroll height
-        const totalHeight = document.body.scrollHeight;
-        const targetPosition = totalHeight * 0.85;
-        
-        // Scroll to this specific position
+        // Use normal section positioning for better centering
+        const sectionPosition = section.getBoundingClientRect().top + window.scrollY;
         window.scrollTo({
-          top: targetPosition,
+          top: sectionPosition - navHeight,
           behavior: 'smooth'
         });
         return;

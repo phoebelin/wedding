@@ -175,13 +175,10 @@ const LandingPage: React.FC = () => {
         }
         
         if (section === 'seat') {
-          // Calculate a position that will ensure the seat section is visible
-          const totalHeight = document.body.scrollHeight;
-          const targetPosition = totalHeight * 0.85;
-          
-          // Scroll to this specific position
+          // Use normal section positioning for better centering
+          const sectionPosition = sectionElement.getBoundingClientRect().top + window.scrollY;
           window.scrollTo({
-            top: targetPosition,
+            top: sectionPosition - navHeight,
             behavior: 'smooth'
           });
           return;
@@ -227,7 +224,7 @@ const LandingPage: React.FC = () => {
   return (
     <div 
       ref={containerRef}
-      className="w-full min-h-screen bg-[#B8B0A2] text-light overflow-hidden"
+      className="w-full min-h-screen bg-[#B8B0A2] text-light overflow-x-hidden"
     >
       {/* Fixed height container to track scroll position */}
       <div className="w-full h-[610vh]">
