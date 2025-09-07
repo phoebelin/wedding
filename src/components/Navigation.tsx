@@ -39,14 +39,23 @@ const Navigation: React.FC<NavigationProps> = ({ activeSection }) => {
         return;
       }
       
-      // Special handling for seat section - use normal positioning for better centering
+      // Special handling for seat section
       if (sectionId === 'seat') {
-        // Use normal section positioning for better centering
-        const sectionPosition = section.getBoundingClientRect().top + window.scrollY;
-        window.scrollTo({
-          top: sectionPosition - navHeight,
-          behavior: 'smooth'
-        });
+        // Find the actual seat section element and center it in the viewport
+        const seatSection = document.getElementById('seat');
+        if (seatSection) {
+          const sectionRect = seatSection.getBoundingClientRect();
+          const viewportHeight = window.innerHeight;
+          const navHeight = 60; // Approximate height of nav bar
+          
+          // Calculate position to center the section in the viewport
+          const targetPosition = window.scrollY + sectionRect.top - (viewportHeight / 2) + (sectionRect.height / 2) - navHeight;
+          
+          window.scrollTo({
+            top: Math.max(0, targetPosition),
+            behavior: 'smooth'
+          });
+        }
         return;
       }
       

@@ -267,7 +267,7 @@ const GuestDetailPage: React.FC = () => {
             
             {/* Personalized Guest Image */}
             <div 
-              className="relative h-72 overflow-hidden -mt-6 z-10"
+              className="relative -mt-6 z-10"
               style={{ 
                 width: 'calc(100vw)', 
                 marginLeft: 'calc(-50vw + 50%)', 
@@ -278,15 +278,16 @@ const GuestDetailPage: React.FC = () => {
                 <img 
                   src={`${process.env.PUBLIC_URL}/images/${guestData.image}`}
                   alt={`${guestData.name}'s personalized`}
-                  className="w-full h-full object-cover"
+                  className="w-full object-contain"
                   onError={(e) => {
+                    console.error('Guest image failed to load:', e.currentTarget.src);
                     // Fallback to placeholder if image fails to load
-                    e.currentTarget.parentElement!.className = "relative h-72 bg-[#D9D9D9] flex items-center justify-center";
+                    e.currentTarget.parentElement!.className = "relative bg-[#D9D9D9] flex items-center justify-center py-16";
                     e.currentTarget.outerHTML = '<p class="font-montserrat font-medium text-sm text-[#857E73]">Personalized Image</p>';
                   }}
                 />
               ) : (
-                <div className="w-full h-full bg-[#D9D9D9] flex items-center justify-center">
+                <div className="w-full bg-[#D9D9D9] flex items-center justify-center py-16">
                   <p className="font-montserrat font-medium text-sm text-[#857E73]">
                     Personalized
                   </p>
@@ -305,7 +306,10 @@ const GuestDetailPage: React.FC = () => {
         </div>
         
         {/* Add Photos Button */}
-        <div className="w-[301px] bg-[#857E73] rounded-xl flex items-center justify-center gap-1 py-[21px] px-6 cursor-pointer">
+        <div 
+          className="w-[301px] bg-[#857E73] rounded-xl flex items-center justify-center gap-1 py-[21px] px-6 cursor-pointer"
+          onClick={() => window.open('https://photos.app.goo.gl/fRRiJuh5XY6gMPE17', '_blank')}
+        >
           <span className="font-montserrat font-medium text-[15px] text-white">Add photos to our album</span>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M8 3.33334V12.6667" stroke="white" strokeWidth="2" strokeLinecap="round"/>

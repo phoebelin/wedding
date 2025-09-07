@@ -30,7 +30,8 @@ export class GuestDataService {
     if (!GOOGLE_SHEET_ID) {
       throw new Error('Google Sheet ID not configured. Please set GOOGLE_SHEET_ID in src/config/guestDataConfig.ts');
     }
-    return `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/export?format=csv&gid=0`;
+    // Try different export formats that might work better with CORS
+    return `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=out:csv`;
   }
 
   /**
@@ -55,12 +56,34 @@ export class GuestDataService {
       console.warn('CSV parsing warnings:', result.errors);
     }
 
-    return result.data.map((row: any) => ({
-      name: String(row.name || '').trim(),
-      table: parseInt(row.table) || 0,
-      note: String(row.note || '').trim(),
-      image: String(row.image || '').trim()
-    })).filter(guest => guest.name); // Filter out empty rows
+    // Available fallback images
+    const fallbackImages = [
+      'guests/guest-john.jpg',
+      'guests/guest-emma.jpg', 
+      'guests/guest-michael.jpg',
+      'guests/guest-sarah.jpg',
+      'guests/guest-david.jpg'
+    ];
+
+    return result.data.map((row: any, index: number) => {
+      const image = String(row.image || '').trim();
+      // Validate image path - only accept paths that start with 'guests/' and have valid extensions
+      let validImage = image && image.startsWith('guests/') && 
+                      (image.endsWith('.jpg') || image.endsWith('.jpeg') || image.endsWith('.png')) 
+                      ? image : '';
+      
+      // If no valid image, assign a fallback image
+      if (!validImage) {
+        validImage = fallbackImages[index % fallbackImages.length];
+      }
+      
+      return {
+        name: String(row.name || '').trim(),
+        table: parseInt(row.table) || 0,
+        note: String(row.note || '').trim(),
+        image: validImage
+      };
+    }).filter(guest => guest.name); // Filter out empty rows
   }
 
   /**
@@ -73,7 +96,13 @@ export class GuestDataService {
     }
 
     try {
-      const response = await fetch(this.getSheetCsvUrl());
+      const csvUrl = this.getSheetCsvUrl();
+      
+      const response = await fetch(csvUrl, {
+        method: 'GET',
+        redirect: 'follow',
+        mode: 'cors'
+      });
       
       if (!response.ok) {
         throw new Error(`Failed to fetch guest data: ${response.status} ${response.statusText}`);
