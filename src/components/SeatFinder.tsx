@@ -205,11 +205,6 @@ const SeatFinder: React.FC<SeatFinderProps> = () => {
                     onClick={() => selectSuggestion(guest)}
                   >
                     <div className="font-medium">{guest.name}</div>
-                    <div className={`text-xs ${
-                      index === selectedIndex ? 'text-gray-200' : 'text-gray-500'
-                    }`}>
-                      Table {guest.table}
-                    </div>
                   </div>
                 ))}
               </div>

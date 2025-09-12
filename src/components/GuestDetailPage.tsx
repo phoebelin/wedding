@@ -265,38 +265,31 @@ const GuestDetailPage: React.FC = () => {
                 }}>
             </div>
             
-            {/* Personalized Guest Image */}
-            <div 
-              className="relative -mt-6 z-10"
-              style={{ 
-                width: 'calc(100vw)', 
-                marginLeft: 'calc(-50vw + 50%)', 
-                marginRight: 'calc(-50vw + 50%)'
-              }}
-            >
-              {guestData.image ? (
+            {/* Personalized Guest Image - only show if image exists */}
+            {guestData.image && (
+              <div 
+                className="relative -mt-6 z-10"
+                style={{ 
+                  width: 'calc(100vw)', 
+                  marginLeft: 'calc(-50vw + 50%)', 
+                  marginRight: 'calc(-50vw + 50%)'
+                }}
+              >
                 <img 
                   src={`${process.env.PUBLIC_URL}/images/${guestData.image}`}
                   alt={`${guestData.name}'s personalized`}
                   className="w-full object-contain"
                   onError={(e) => {
                     console.error('Guest image failed to load:', e.currentTarget.src);
-                    // Fallback to placeholder if image fails to load
-                    e.currentTarget.parentElement!.className = "relative bg-[#D9D9D9] flex items-center justify-center py-16";
-                    e.currentTarget.outerHTML = '<p class="font-montserrat font-medium text-sm text-[#857E73]">Personalized Image</p>';
+                    // Hide the image section if it fails to load
+                    e.currentTarget.parentElement!.style.display = 'none';
                   }}
                 />
-              ) : (
-                <div className="w-full bg-[#D9D9D9] flex items-center justify-center py-16">
-                  <p className="font-montserrat font-medium text-sm text-[#857E73]">
-                    Personalized
-                  </p>
-                </div>
-              )}
-            </div>
+              </div>
+            )}
             
             {/* Note */}
-            <div className="w-full relative overflow-hidden rounded-lg -mt-6 p-6">
+            <div className={`w-full relative overflow-hidden rounded-lg p-6 ${guestData.image ? '-mt-6' : ''}`}>
               <p className="font-montserrat font-medium text-[15px] text-white text-justify leading-relaxed">
                 {generatedText}
                 {isGenerating && <span className="ml-1 inline-block w-2 h-4 bg-white animate-pulse"></span>}
@@ -318,7 +311,7 @@ const GuestDetailPage: React.FC = () => {
         </div>
         
         {/* Wedding Bands Section */}
-        <div className="w-full flex flex-col items-center gap-2 mt-24">
+        <div className="w-full flex flex-col items-center gap-2 mt-8">
           <p className="font-montserrat font-medium text-[15px] text-white text-center">
             Bonus pic: we made our wedding bands in Bali!
           </p>
@@ -349,9 +342,8 @@ const GuestDetailPage: React.FC = () => {
         {/* Credits Section */}
         <div className="flex flex-col items-center gap-1 mt-[40px]">
           <p className="font-montserrat font-medium text-[15px] text-white">Created by Phoebe with Cursor</p>
-          <p className="font-montserrat font-medium text-[15px] text-white">40+ hours</p>
-          <p className="font-montserrat font-medium text-[15px] text-white">482 prompts</p>
-          <p className="font-montserrat font-medium text-[15px] text-white">159 restores</p>
+          <p className="font-montserrat font-medium text-[15px] text-white">If you have a feature request,</p>
+          <p className="font-montserrat font-medium text-[15px] text-white">kindly do not request it :P</p>
         </div>
       </div>
     </div>
