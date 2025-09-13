@@ -56,14 +56,6 @@ export class GuestDataService {
       console.warn('CSV parsing warnings:', result.errors);
     }
 
-    // Available fallback images
-    const fallbackImages = [
-      'guests/guest-john.jpg',
-      'guests/guest-emma.jpg', 
-      'guests/guest-michael.jpg',
-      'guests/guest-sarah.jpg',
-      'guests/guest-david.jpg'
-    ];
 
     return result.data.map((row: any, index: number) => {
       const image = String(row.image || '').trim();
