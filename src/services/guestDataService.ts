@@ -72,10 +72,7 @@ export class GuestDataService {
                       (image.endsWith('.jpg') || image.endsWith('.jpeg') || image.endsWith('.png')) 
                       ? image : '';
       
-      // If no valid image, assign a fallback image
-      if (!validImage) {
-        validImage = fallbackImages[index % fallbackImages.length];
-      }
+      // Don't assign fallback images - leave empty if no valid image
       
       return {
         name: String(row.name || '').trim(),
@@ -164,9 +161,9 @@ export class GuestDataService {
   private getFallbackData(): Guest[] {
     return [
       { name: "John Smith", table: 5, note: "Looking forward to having you join us!", image: "guests/guest-john.jpg" },
-      { name: "Emma Johnson", table: 3, note: "Can't wait to celebrate with you!", image: "guests/guest-emma.jpg" },
+      { name: "Emma Johnson", table: 3, note: "Can't wait to celebrate with you!", image: "" },
       { name: "Michael Williams", table: 8, note: "We're so happy you can make it!", image: "guests/guest-michael.jpg" },
-      { name: "Sarah Brown", table: 2, note: "Thank you for being part of our special day!", image: "guests/guest-sarah.jpg" },
+      { name: "Sarah Brown", table: 2, note: "Thank you for being part of our special day!", image: "" },
       { name: "David Miller", table: 9, note: "We're so glad you're here, David! You have been such a light to us, thank you for joining. Can't wait to spend more time with you at dinner :) We're so glad you're here, David! You have been such a light to us, thank you for joining. Can't wait to spend more time with you at dinner :)", image: "guests/guest-david.jpg" },
     ];
   }
